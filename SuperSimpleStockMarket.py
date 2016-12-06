@@ -21,7 +21,14 @@ class Trade:
   timestamp_= None
   quantity_= None
   bs_= None
-  price_= None    
+  price_= None
+
+  def __init__(self, symbol, timestamp, quantity, bs, price):
+    self.symbol_ = symbol
+    self.timestamp_ = timestamp
+    self.quantity_ = quantity
+    self.bs_ = bs
+    self.price_ = price    
   
 def calculateDividendYield(stockElement, price):
   #Receives a StockElemente object and a price
@@ -64,12 +71,11 @@ def loadStocks():
   with open(StockInputs, 'r') as inputFile:
     inputRows = csv.DictReader(inputFile, delimiter=';')
     for row in inputRows:
-      print("Another row") 
       symbol=row['Stock Symbol']
+      symbolArray.append(symbol)
       del row['Stock Symbol']
-      stockArrayAux.append(StockElement(symbol, dict(row)))
-    print(len(stockArrayAux))
-    showStockArray(stockArrayAux)    
+      stockArrayAux.append(StockElement(symbol, dict(row)))  
+    print("Stocks loaded succesfully\n")  
   return stockArrayAux  
   
 def extractTradesSymbol(tradesArray, stock):
@@ -90,6 +96,10 @@ def extractTradesTime(tradesArray, minutes):
       tradesAux.append(tradesArray[i])
   return tradesAux    
    
+def showTradeArray(array):
+  for record in array:
+    showTrade(record)    
+  
 def showTrade(record):
   print(record.symbol_)
   print(record.bs_)
@@ -110,6 +120,7 @@ if __name__ == '__main__':
     stockArray = [None]
     symbolArray = [None]
     tradeRecordArray = [None]    
+
     mainMenu = {}
     mainMenu['1']="Load stocks." 
     mainMenu['2']="Select stock to operate."
@@ -171,25 +182,21 @@ if __name__ == '__main__':
                 print("Result is: ",calculatePERatio(stockElementAux, float(price)))
                 print("peratio")
               elif selection == '3':
-                #Record a trade
-                tradeElementAux = Trade() #Create an object
-                tradeElementAux.symbol_ = selectedStock
+                #Record a trade                
                 bs = input("Enter 'b' for buy or 's' for sell: ")
                 while bs != 'b' and bs != 's':
                   bs = input("Please enter only 'b' or 's' for buy or sell: ")  
-                tradeElementAux.bs_ = bs #Assign value for buy or sell indicator  
                 quantity = int(input("Enter the quantity to buy or sell: "))
                 while (not isinstance(quantity,int)) or quantity <= 0:
                   quantity = input("Please enter only positive integers for this value: ")
-                tradeElementAux.quantity_ = quantity #Assign value for quantity    
                 price = float(input("Enter price of the operation: "))
                 while (not isinstance(price,float)) or price <= 0:
                   price = input("Please enter only positive floats for this value: ")
-                tradeElementAux.price_ = price #Assign value for price
-                tradeElementAux.timestamp_ = time.time()
-                tradeRecordArray.append(tradeElementAux)
-                showTrade(tradeElementAux)
-                showTrade(tradeRecordArray[0])
+                tradeRecordArray.append(Trade(selectedStock, time.time(), quantity, bs, price))
+                tradeAux = Trade(selectedStock, time.time(), quantity, bs, price)
+                showTrade(tradeAux)
+                print(len(tradeRecordArray))
+                showTradeArray(tradeRecordArray)
                 print("Recorded trade succesfully\n")
               elif selection == '4':  
                 #Calculate VWSP
