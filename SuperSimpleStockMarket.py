@@ -50,7 +50,7 @@ def calculateVWSP(tradesArray):
   num = den = 0  
   for i in range(0,len(tradesArray)):
     num+= tradesArray[i].quantity_*tradesArray[i].price_
-    den+= tradesArray[i].quantity
+    den+= tradesArray[i].quantity_
   return num/den   
     
 def calculateGBCE(volumesArray):
@@ -59,8 +59,8 @@ def calculateGBCE(volumesArray):
   n = len(volumesArray)
   p = 1
   for i in range(0, n):
-    p *= volumesArray(i)
-  return p^(1/n)           
+    p *= volumesArray[i]
+  return pow(p,1/n)           
     
 def loadStocks():
   #Loads user's input for file path and calls parseLines() to save stocks to an array
@@ -81,19 +81,23 @@ def loadStocks():
 def extractTradesSymbol(tradesArray, stock):
   #Receives an array of Trade objects and a stock's symbol
   #Returns an array of Trades corresponding to that stock's symbol  
-  tradesAux = [None]  
+  tradesAux = []
+  showTradeArray(tradesArray)  
   for i in range(0, len(tradesArray)):
     if tradesArray[i].symbol_ == stock:
       tradesAux.append(tradesArray[i])
+  showTradeArray(tradesAux)    
   return tradesAux 
 
 def extractTradesTime(tradesArray, minutes):
   #Receives an array of Trade objects and a time in minutes
   #Returns an array of Trades in the last 'x' minutes     
-  tradesAux = [None]
+  tradesAux = []
+  showTradeArray(tradesArray)
   for i in range(0, len(tradesArray)):
     if (time.time() - tradesArray[i].timestamp_) <= minutes*60 :
       tradesAux.append(tradesArray[i])
+  showTradeArray(tradesAux)    
   return tradesAux    
    
 def showTradeArray(array):
@@ -117,9 +121,9 @@ def showStock(stockElement):
    
 if __name__ == '__main__':
     
-    stockArray = [None]
-    symbolArray = [None]
-    tradeRecordArray = [None]    
+    stockArray = []
+    symbolArray = []
+    tradeRecordArray = []    
 
     mainMenu = {}
     mainMenu['1']="Load stocks." 
@@ -134,7 +138,7 @@ if __name__ == '__main__':
       selection=input("Please Select an option from the menu: ") 
       if selection =='1':
         #Load stocks  
-        if stockArray == [None]:  
+        if len(stockArray) == 0:  
           stockArray=loadStocks()  
         else:
           while True:  
@@ -147,7 +151,7 @@ if __name__ == '__main__':
               print("Unkwon option selected!")    
       elif selection == '2':  
         #Select a stock to operate with  
-        if stockArray == [None]:
+        if len(stockArray) == 0:
           print ("First you must load stocks to operate with\n")
         else:
           selectedStock=input("Select a stock to operate on\n(test stocks are TEA/POP/ALE/GIN/JOE): ")  
@@ -180,7 +184,6 @@ if __name__ == '__main__':
                     break
                 price = input("Enter the price for the dividend yield calculation: ")
                 print("Result is: ",calculatePERatio(stockElementAux, float(price)))
-                print("peratio")
               elif selection == '3':
                 #Record a trade                
                 bs = input("Enter 'b' for buy or 's' for sell: ")
@@ -201,11 +204,11 @@ if __name__ == '__main__':
               elif selection == '4':  
                 #Calculate VWSP
                 tradesAux = extractTradesSymbol(tradeRecordArray, selectedStock)
-                if len(tradesAux) <= 0:
+                if len(tradesAux) == 0:
                   print("Please record trades for this stock before trying to obtain VWSP")
                 else:
                   tradesAux = extractTradesTime(tradesAux,DEFAULT_TIME_MINUTES)
-                  if len(tradesAux) <= 0:
+                  if len(tradesAux) == 0:
                     print("There are no records in under 5 minutes for this stock")
                   else:
                     print("VWSP is: ", calculateVWSP(tradesAux))    
@@ -218,13 +221,13 @@ if __name__ == '__main__':
             
       elif selection == '3':
         #Calculate GBCE
-        if stockArray == [None]:
+        if len(stockArray) == 0:
           print ("First you must load stocks to operate with\n")
         else:
-          if tradeRecordArray == [None]:
+          if len(tradeRecordArray) == 0:
             print("First you must record Trades\n")
           else:  
-            volumeWSP = [None] 
+            volumeWSP = [] 
             for i in range(0, len(stockArray)):
               tradesAux = extractTradesSymbol(tradeRecordArray, stockArray[i].symbol_)
               if len(tradesAux) > 0:
