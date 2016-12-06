@@ -5,11 +5,16 @@ Created on Sat Dec  3 17:09:10 2016
 @author: Agustin Canavari
 """
 import time
+import csv
 DEFAULT_TIME_MINUTES = 5
 
 class StockElement:
   symbol_=""
   properties_={} # key:value array
+  
+  def __init__(self, symbol,properties):
+    self.symbol_ = symbol
+    self.properties_ = properties  
   
 class Trade:
   symbol_=""
@@ -49,33 +54,23 @@ def calculateGBCE(volumesArray):
   for i in range(0, n):
     p *= volumesArray(i)
   return p^(1/n)           
-
-def parseLines(lines, propertyList):
-  #Receives all lines in a file and a list of properties to save
-  #Returns an array with all stocks  
-  stockArray = []
-  for line in lines:    
-    lineContent = line.rstrip().split(";") #Parsing the line in an array     
-    stockElementAux = StockElement() #Create object
-    stockElementAux.symbol_ = (lineContent[0]) #Load symbol
-    symbolArray.append(stockElementAux.symbol_) #Load symbol into a global array
-    for i in range(1,len(lineContent)):
-      stockElementAux.properties_[propertyList[i]] = lineContent[i] #Load properties
-    print(stockElementAux.properties_)
-    stockArray.append(stockElementAux)
-  return stockArray
-  
+    
 def loadStocks():
   #Loads user's input for file path and calls parseLines() to save stocks to an array
-  #Returns stockArray  
+  #Returns stockArray
+  #Symbol's name is assumed to be 'Stock Symbol'
+  stockArrayAux = []  
   StockInputs=input("Please select path for a stocks CSV file \n(test file's path is: './Inputs/Stock_inputs_test.csv'): ")
-  with open(StockInputs, 'r') as f:
-    #CSV file is assumed to contain no errors or duplicates 
-    propertyList = f.readline().rstrip().split(";") #Read list of properties
-    stockArray = parseLines(f.readlines(),propertyList) #Read all stocks  
-    for element in stockArray:
-      showStock(element)    
-  return stockArray
+  with open(StockInputs, 'r') as inputFile:
+    inputRows = csv.DictReader(inputFile, delimiter=';')
+    for row in inputRows:
+      print("Another row") 
+      symbol=row['Stock Symbol']
+      del row['Stock Symbol']
+      stockArrayAux.append(StockElement(symbol, dict(row)))
+    print(len(stockArrayAux))
+    showStockArray(stockArrayAux)    
+  return stockArrayAux  
   
 def extractTradesSymbol(tradesArray, stock):
   #Receives an array of Trade objects and a stock's symbol
@@ -102,6 +97,10 @@ def showTrade(record):
   print(record.price_)
   print(record.timestamp_)   
 
+def showStockArray(stockArrayAux):
+  for stockElement in stockArrayAux:
+    showStock(stockElement)    
+  
 def showStock(stockElement):
   print (stockElement.symbol_)
   print (stockElement.properties_)    
