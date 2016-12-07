@@ -85,46 +85,19 @@ def extractTradesSymbol(tradesArray, stock):
   #Receives an array of Trade objects and a stock's symbol
   #Returns an array of Trades corresponding to that stock's symbol  
   tradesAux = []
-  showTradeArray(tradesArray)  
   for i in range(0, len(tradesArray)):
     if tradesArray[i].symbol_ == stock:
-      tradesAux.append(tradesArray[i])
-  showTradeArray(tradesAux)    
+      tradesAux.append(tradesArray[i])  
   return tradesAux 
 
 def extractTradesTime(tradesArray, minutes):
   #Receives an array of Trade objects and a time in minutes
   #Returns an array of Trades in the last 'x' minutes     
   tradesAux = []
-  showTradeArray(tradesArray)
   for i in range(0, len(tradesArray)):
     if (time.time() - tradesArray[i].timestamp_) <= minutes*60 :
-      tradesAux.append(tradesArray[i])
-  showTradeArray(tradesAux)    
-  return tradesAux    
-   
-def showTradeArray(array):
-  #Prints values of a trade array  
-  for record in array:
-    showTrade(record)    
-  
-def showTrade(record):
-  #Prints values of a trade 
-  print(record.symbol_)
-  print(record.bs_)
-  print(record.quantity_)
-  print(record.price_)
-  print(record.timestamp_)   
-
-def showStockArray(stockArrayAux):
-  #prints values of a stockElement array 
-  for stockElement in stockArrayAux:
-    showStock(stockElement)    
-  
-def showStock(stockElement):
-  #Prints values of a stockElement  
-  print (stockElement.symbol_)
-  print (stockElement.properties_)    
+      tradesAux.append(tradesArray[i])  
+  return tradesAux      
    
 if __name__ == '__main__':
     
@@ -141,8 +114,8 @@ if __name__ == '__main__':
     while True: 
       options=list(mainMenu.keys())
       options.sort()
-      for entry in options:
-        print("\n")  
+      print("\n") 
+      for entry in options:         
         print (entry, mainMenu[entry])
       selection=input("Please Select an option from the menu: ") 
       if selection =='1':
@@ -173,8 +146,8 @@ if __name__ == '__main__':
             while True: 
               options=list(operationsMenu.keys())
               options.sort()
-              for entry in options:
-                print("\n")  
+              print("\n")
+              for entry in options:                  
                 print (entry, operationsMenu[entry])
               selection=input("Please Select an operation from the menu: ")
               if selection == '1':
@@ -245,10 +218,8 @@ if __name__ == '__main__':
                     else:
                       break    
                 tradeRecordArray.append(Trade(selectedStock, time.time(), quantity, bs, price))
-                tradeAux = Trade(selectedStock, time.time(), quantity, bs, price)
-                showTrade(tradeAux)
-                print(len(tradeRecordArray))
-                showTradeArray(tradeRecordArray)
+                tradeAux = Trade(selectedStock, time.time(), quantity, bs, price)        
+                print(len(tradeRecordArray))       
                 print("Recorded trade succesfully\n")
               elif selection == '4':  
                 #Calculate VWSP
@@ -267,7 +238,6 @@ if __name__ == '__main__':
                 print("Unkown option selected!")    
           else:
             print("Entered stock is not an option. Please try again")               
-            
       elif selection == '3':
         #Calculate GBCE
         if len(stockArray) == 0:
@@ -288,4 +258,3 @@ if __name__ == '__main__':
         break
       else: 
         print ("Unknown option selected!") 
-        
