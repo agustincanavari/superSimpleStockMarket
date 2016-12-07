@@ -15,3 +15,4 @@ Using the program, users can:
         5) Calculate GBCE for all trades
 
 Test input is provided as a CSV.
+The program assumes input files contains no errors or duplicates
