@@ -128,8 +128,6 @@ if __name__ == '__main__':
             answer = input("Please enter only 'y' or 'n' for yess or no: ")
           if answer=='y':
             stockArray=loadStocks()
-          elif answer=='n':
-            break
       elif selection == '2':  
         #Select a stock to operate with  
         if len(stockArray) == 0:
@@ -218,8 +216,7 @@ if __name__ == '__main__':
                     else:
                       break    
                 tradeRecordArray.append(Trade(selectedStock, time.time(), quantity, bs, price))
-                tradeAux = Trade(selectedStock, time.time(), quantity, bs, price)        
-                print(len(tradeRecordArray))       
+                tradeAux = Trade(selectedStock, time.time(), quantity, bs, price)             
                 print("Recorded trade succesfully\n")
               elif selection == '4':  
                 #Calculate VWSP
